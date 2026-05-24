@@ -93,7 +93,7 @@ void action_idle() {
   pca1_SetAngle(13, 90.0f);
   pca1_SetAngle(14, 90.0f);
   pca1_SetAngle(15, 90.0f);
-  pca2_SetAngle( 0, 90.0f);
+  // pca2_SetAngle( 0, 90.0f);
   pca2_SetAngle( 1, 90.0f);
   pca2_SetAngle( 2, 90.0f);
   pca2_SetAngle( 3, 90.0f);
@@ -171,11 +171,15 @@ void action_X() {
 void action_O() {
   Serial.printf("[CMD 7] O — state %d\n", state_cmd7);
   if (state_cmd7 == 0) {
-    pca2_SetAngle(0, 180.0f);
+    pca2_SetAngle(0,   0.0f);
     state_cmd7 = 1;
   }
-  else {
+  else if (state_cmd7 == 1) {
     pca2_SetAngle(0,  90.0f);
+    state_cmd7 = 2;
+  }
+  else if (state_cmd7 == 2) {
+    pca2_SetAngle(0, 180.0f);
     state_cmd7 = 0;
   }
 }
