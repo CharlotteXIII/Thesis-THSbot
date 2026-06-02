@@ -1,57 +1,50 @@
 // ================================================================
-//  ESP32 Receiver — Full Version
-//  Core 0 : รับ ESP-NOW โยนลง Queue
-//  Core 1 : รับจาก Queue สั่ง servo ผ่าน PCA9685
+//  Core 0 : Receive ESP-NOW put into Queue
+//  Core 1 : Receive Queue and command servo through PCA9685 (X2)
 //
-//  PCA9685 #1 (0x40) → MG90s  ch 0-15
-//  PCA9685 #2 (0x41) → MG996R ch 0-9
+//  PCA9685#1 (0x40) - MG90s  ch 0-15
+//  PCA9685#2 (0x41) - MG996R ch 0-9
 //
 //  Commands:
-//    0 = ปล่อยปุ่ม (idle)
-//    1 = UP    (กดค้าง)
-//    2 = LEFT  (กดค้าง)
-//    3 = RIGHT (กดค้าง)
-//    6 = X     (กด 1 ครั้ง → วน state)
-//    7 = O     (กด 1 ครั้ง → วน state)
+//    1 = UP    (Press and hold)
+//    2 = LEFT  (Press and hold)
+//    3 = RIGHT (Press and hold)
+//    6 = X     (Press once)
+//    7 = O     (Press once)
 // ================================================================
+//  BNO055: Detect Rolling Angles
 // ================================================================
-//  ESP32 Receiver — Full Version
-// ================================================================
+//  CharlotteXIII
 
 #include <esp_now.h>
 #include <WiFi.h>
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BNO055.h>
 
 Adafruit_PWMServoDriver pca1 = Adafruit_PWMServoDriver(0x40);
 Adafruit_PWMServoDriver pca2 = Adafruit_PWMServoDriver(0x41);
+Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 
 #define SERVO_MIN  150
 #define SERVO_MAX  600
 #define PWM_FREQ   50
 
-QueueHandle_t commandQueue;
+QueueHandle_t commandQueue; //Create Queue
 
+//Create a box that stored int command from Controller
 typedef struct struct_message {
   int command;
 } struct_message;
 
-// ================================================================
-// Live angle tracking — เก็บองศาล่าสุดของทุกตัว
-// ================================================================
-float live_pca1[16] = {90};  // MG90s  ch 0-15
-float live_pca2[10] = {90};  // MG996R ch 0-9
-
-// ================================================================
-// Helper — บันทึกองศาและ print ทันที
-// ================================================================
+//=============================================
+// Convert Angle to PWM
 void pca1_SetAngle(uint8_t ch, float angle) {
   if (angle < 0.0f)   angle = 0.0f;
   if (angle > 180.0f) angle = 180.0f;
   uint16_t pulse = SERVO_MIN + (uint16_t)((angle / 180.0f) * (SERVO_MAX - SERVO_MIN));
   pca1.setPWM(ch, 0, pulse);
-  live_pca1[ch] = angle;  // บันทึกองศาล่าสุด
-  Serial.printf("  [PCA1] ch%02d → %.1f deg\n", live_pca1[0], angle);
 }
 
 void pca2_SetAngle(uint8_t ch, float angle) {
@@ -59,52 +52,10 @@ void pca2_SetAngle(uint8_t ch, float angle) {
   if (angle > 180.0f) angle = 180.0f;
   uint16_t pulse = SERVO_MIN + (uint16_t)((angle / 180.0f) * (SERVO_MAX - SERVO_MIN));
   pca2.setPWM(ch, 0, pulse);
-  live_pca2[ch] = angle;  // บันทึกองศาล่าสุด
-  // Serial.printf("  [PCA2] ch%02d → %.1f deg\n", ch, angle);
 }
+//=============================================
 
-// ================================================================
-// State variables
-// ================================================================
-uint8_t state_cmd1 = 0;
-uint8_t state_cmd2 = 0;
-uint8_t state_cmd3 = 0;
-uint8_t state_cmd6 = 0;
-uint8_t state_cmd7 = 0;
-
-// ================================================================
-// ACTIONS
-// ================================================================
-void action_idle() {
-  Serial.println("[CMD 0] IDLE");
-  // pca1_SetAngle( 0, 90.0f);
-  pca1_SetAngle( 1, 90.0f);
-  pca1_SetAngle( 2, 90.0f);
-  pca1_SetAngle( 3, 90.0f);
-  pca1_SetAngle( 4, 90.0f);
-  pca1_SetAngle( 5, 90.0f);
-  pca1_SetAngle( 6, 90.0f);
-  pca1_SetAngle( 7, 90.0f);
-  pca1_SetAngle( 8, 90.0f);
-  pca1_SetAngle( 9, 90.0f);
-  pca1_SetAngle(10, 90.0f);
-  pca1_SetAngle(11, 90.0f);
-  pca1_SetAngle(12, 90.0f);
-  pca1_SetAngle(13, 90.0f);
-  pca1_SetAngle(14, 90.0f);
-  pca1_SetAngle(15, 90.0f);
-  // pca2_SetAngle( 0, 90.0f);
-  pca2_SetAngle( 1, 90.0f);
-  pca2_SetAngle( 2, 90.0f);
-  pca2_SetAngle( 3, 90.0f);
-  pca2_SetAngle( 4, 90.0f);
-  pca2_SetAngle( 5, 90.0f);
-  pca2_SetAngle( 6, 90.0f);
-  pca2_SetAngle( 7, 90.0f);
-  pca2_SetAngle( 8, 90.0f);
-  pca2_SetAngle( 9, 90.0f);
-}
-
+//===============ACTIONs=======================
 void action_up() {
   Serial.printf("[CMD 1] UP — state %d\n", state_cmd1);
   if (state_cmd1 == 0) {
@@ -183,6 +134,8 @@ void action_O() {
     state_cmd7 = 0;
   }
 }
+//=============================================
+
 
 // ================================================================
 // CORE 0 — ESP-NOW callback
@@ -205,7 +158,6 @@ void servoTask(void *pvParameters) {
   for (;;) {
     if (xQueueReceive(commandQueue, &cmd, portMAX_DELAY) == pdTRUE) {
       switch (cmd) {
-        case 0: action_idle();  break;
         case 1: action_up();    break;
         case 2: action_left();  break;
         case 3: action_right(); break;

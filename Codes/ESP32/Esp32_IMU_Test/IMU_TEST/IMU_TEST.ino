@@ -9,12 +9,12 @@ void setup() {
   Wire.begin(21, 22);
 
   if (!bno.begin()) {
-    Serial.println("❌ ไม่พบ BNO055!");
+    Serial.println("BNO055 Not Found");
     while (1);
   }
   delay(1000);
   bno.setExtCrystalUse(true);
-  Serial.println("✅ พร้อมใช้งาน");
+  Serial.println("BNO055 Found");
 }
 
 void loop() {
@@ -24,10 +24,10 @@ void loop() {
 
   int zone = -1; // ค่า default ถ้าไม่อยู่ใน zone ไหนเลย
 
-  if      (roll > -45  && roll <= 45)   zone = 0; // วางหงาย
-  else if (roll > 45   && roll <= 135)  zone = 1; // ก้มหน้า ~90°
+  if      (roll > -30  && roll <= 30)   zone = 0; // วางหงาย
+  else if (roll > 30   && roll <= 135)  zone = 1; // ก้มหน้า ~90°
   else if (roll > 135  || roll < -135)  zone = 2; // คว่ำหน้า ~180°
-  else if (roll >= -135 && roll <= -45) zone = 3; // หงายหลัง ~-90°
+  else if (roll >= -135 && roll <= -30) zone = 3; // หงายหลัง ~-90°
 
   Serial.println(zone);
   delay(100);
