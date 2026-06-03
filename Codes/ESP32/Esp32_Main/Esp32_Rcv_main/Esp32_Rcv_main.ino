@@ -84,17 +84,14 @@ void smoothSweepPair(Adafruit_PWMServoDriver &pca, uint8_t ch1, uint8_t ch2, flo
 
 void action_default() {
   //Legs
-  smoothSweepPair(pca2, 4, 255, cur_pca2[4], 90.0f, 10);
-  smoothSweepPair(pca2, 5, 255, cur_pca2[5], 90.0f, 10);
-  smoothSweepPair(pca2, 6, 255, cur_pca2[6], 90.0f, 10);
-  smoothSweepPair(pca2, 7, 255, cur_pca2[7], 90.0f, 10);
-  smoothSweepPair(pca2, 8, 255, cur_pca2[8], 90.0f, 10);
-  smoothSweepPair(pca2, 9, 255, cur_pca2[9], 90.0f, 10);
+  smoothSweepPair(pca2, 4, 7, cur_pca2[4], 90.0f, 10); 
+  smoothSweepPair(pca2, 5, 8, cur_pca2[5], 90.0f, 10); 
+  smoothSweepPair(pca2, 6, 9, cur_pca2[6], 90.0f, 10);
 
   //Arms
   smoothSweepPair(pca2, 0, 255, cur_pca2[0], 150.0f, 10);
-  smoothSweepPair(pca2, 2, 255, cur_pca2[2], 60.0f, 10);
-  smoothSweepPair(pca2, 1, 255, cur_pca2[1]0.0f, 120.0f, 10);
+  smoothSweepPair(pca2, 2, 255, cur_pca2[2], 30.0f, 10);
+  smoothSweepPair(pca2, 1, 255, cur_pca2[1], 150.0f, 10);
   smoothSweepPair(pca2, 3, 255, cur_pca2[3], 30.0f, 15);
 
   //Shells
@@ -190,19 +187,20 @@ void action_right() {
 void action_X() {
   // Not Create stand up sequence yet
   if (stateLock == 1){
-  // [LEGS]
-    smoothSweepPair(pca2, 6, 9, 0.0f, 90.0f, 10);
-    smoothSweepPair(pca2, 5, 8, 0.0f, 90.0f, 10);
-    smoothSweepPair(pca2, 4, 7, 0.0f, 90.0f, 10);
-  // [ARMS]
-    smoothSweepPair(pca2, 0, 2, 0.0f, 30.0f, 10);
-    smoothSweepPair(pca2, 1, 3, 0.0f, 30.0f, 10);
+  // // [LEGS]
+  //   smoothSweepPair(pca2, 6, 9, 0.0f, 90.0f, 10);
+  //   smoothSweepPair(pca2, 5, 8, 0.0f, 90.0f, 10);
+  //   smoothSweepPair(pca2, 4, 7, 0.0f, 90.0f, 10);
+  // // [ARMS]
+  //   smoothSweepPair(pca2, 0, 2, 0.0f, 30.0f, 10);
+  //   smoothSweepPair(pca2, 1, 3, 0.0f, 30.0f, 10);
 
-  // [Shells] //////////////////////////////
-    for (float a = 0.0f; a <= 90.0f; a += 2.0f) {
-      for(int i=0; i<12; i++) { pca1_SetAngle(i, a); }
-      vTaskDelay(pdMS_TO_TICKS(10));
-    }
+  // // [Shells] //////////////////////////////
+  //   for (float a = 0.0f; a <= 90.0f; a += 2.0f) {
+  //     for(int i=0; i<12; i++) { pca1_SetAngle(i, a); }
+  //     vTaskDelay(pdMS_TO_TICKS(10));
+  //   }
+    action_default();
     stateLock = 0;
   }
 }
@@ -212,30 +210,32 @@ void action_O() {
   {  
     stateLock = 1; 
     // [LEGS] //////////////////////////////
-    smoothSweepPair(pca2, 4, 255, 90.0f, 0.0f, 15);
-    smoothSweepPair(pca2, 7, 255, 90.0f, 180.0f, 15);
+    smoothSweepPair(pca2, 4, 255, cur_pca2[4], 0.0f, 15);
+    smoothSweepPair(pca2, 7, 255, cur_pca2[7], 180.0f, 15);
     vTaskDelay(pdMS_TO_TICKS(300));
 
-    smoothSweepPair(pca2, 5, 255, 90.0f, 30.0f, 15);
-    smoothSweepPair(pca2, 4, 255, 90.0f, 120.0f, 15);
+    smoothSweepPair(pca2, 5, 255, cur_pca2[5], 60.0f, 15);
+    smoothSweepPair(pca2, 8, 255, cur_pca2[8], 120.0f, 15);
     vTaskDelay(pdMS_TO_TICKS(500));
 
-    smoothSweepPair(pca2, 6, 255, 90.0f, 60.0f, 15);
-    smoothSweepPair(pca2, 9, 255, 90.0f, 150.0f, 15);
+    smoothSweepPair(pca2, 6, 255, cur_pca2[6], 30.0f, 15);
+    smoothSweepPair(pca2, 9, 255, cur_pca2[9], 150.0f, 15);
     vTaskDelay(pdMS_TO_TICKS(300));
 
     // [ARMS] //////////////////////////////
-    smoothSweepPair(pca2, 0, 255, 90.0f, 180.0f, 15);
-    smoothSweepPair(pca2, 2, 255, 90.0f, 0.0f, 15);
+    smoothSweepPair(pca2, 0, 255, cur_pca2[0], 180.0f, 15);
+    smoothSweepPair(pca2, 2, 255, cur_pca2[2], 0.0f, 15);
     vTaskDelay(pdMS_TO_TICKS(500));
     
-    smoothSweepPair(pca2, 1, 255, 90.0f, 150.0f, 15);
-    smoothSweepPair(pca2, 3, 255, 90.0f, 60.0f, 15);
+    smoothSweepPair(pca2, 1, 255, cur_pca2[1], 150.0f, 15);
+    smoothSweepPair(pca2, 3, 255, cur_pca2[3], 30.0f, 15);
     vTaskDelay(pdMS_TO_TICKS(500));
 
     // [Shells] //////////////////////////////
     for (float a = 90.0f; a >= 0.0f; a -= 2.0f) {
-      for(int i=0; i<12; i++) { pca1_SetAngle(i, a); }
+      for(int i=0; i<12; i++) { 
+        if (a <= cur_pca1[i]) pca1_SetAngle(i, a);
+      }
       vTaskDelay(pdMS_TO_TICKS(10));
     }
   }
