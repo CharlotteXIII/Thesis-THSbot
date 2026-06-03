@@ -1,30 +1,18 @@
 #include <esp_now.h>
-
 #include <WiFi.h>
 
-
-
 //StopRightThere
-
 int lastCommandSent = -1;
 
-
-
 //MAC Address
-
 uint8_t broadcastAddress[] = {0xA4, 0xF0, 0x0F, 0x6F, 0x8C, 0xC8};
 
-
-
 #define PIN_UP    25
-
 #define PIN_LEFT  26
-
 #define PIN_RIGHT 27
-
 #define PIN_X     32
-
 #define PIN_O     33
+#define PIN_Sleep 35
 
 
 
@@ -45,9 +33,8 @@ esp_now_peer_info_t peerInfo;
 // XandO 1 tap
 
 bool lastStateX = false;
-
 bool lastStateO = false;
-
+bool lastStateSleep = false;
 
 
 
@@ -64,25 +51,14 @@ void setup() {
 
   Serial.begin(115200);
 
-
-
-
-
   pinMode(PIN_UP, INPUT);
-
   pinMode(PIN_LEFT, INPUT);
-
   pinMode(PIN_RIGHT, INPUT);
-
   pinMode(PIN_X, INPUT);
-
   pinMode(PIN_O, INPUT);
-
-
+  pinMode(PIN_Sleep, INPUT);
 
   WiFi.mode(WIFI_STA);
-
-
 
   if (esp_now_init() != ESP_OK) {
 
@@ -92,54 +68,31 @@ void setup() {
 
   }
 
-
-
-
-
   esp_now_register_send_cb((esp_now_send_cb_t)OnDataSent);
-
-
-
   memcpy(peerInfo.peer_addr, broadcastAddress, 6);
-
   peerInfo.channel = 0;  
-
   peerInfo.encrypt = false;
 
-
-
   if (esp_now_add_peer(&peerInfo) != ESP_OK){
-
     Serial.println("Failed to add peer");
-
     return;
-
   }
-
 }
-
-
 
 void loop() {
 
 
 
   bool currentStateUp = digitalRead(PIN_UP) == HIGH;
-
   bool currentStateLeft = digitalRead(PIN_LEFT) == HIGH;
-
   bool currentStateRight = digitalRead(PIN_RIGHT) == HIGH;
-
   bool currentStateX = digitalRead(PIN_X) == HIGH;
-
   bool currentStateO = digitalRead(PIN_O) == HIGH;
-
+  bool currentStateSleep = digitalRead(PIN_Sleep) == HIGH;
 
 
   int commandToSend = 0; //Default start
-
   bool triggerSingleShot = false;
-
 
 
   if (currentStateX == true && lastStateX == false) {
@@ -153,6 +106,14 @@ void loop() {
   else if (currentStateO == true && lastStateO == false) {
 
     commandToSend = 7;
+
+    triggerSingleShot = true;
+
+  }
+
+  else if (currentStateSleep == true && lastStateSleep == false) {
+
+    commandToSend = 8;
 
     triggerSingleShot = true;
 
@@ -175,14 +136,11 @@ void loop() {
       commandToSend = 3;
 
     }
-
   }
 
-
-
   lastStateX = currentStateX;
-
   lastStateO = currentStateO;
+  lastStateSleep = currentStateSleep;
 
  
 

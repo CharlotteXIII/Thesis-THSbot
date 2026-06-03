@@ -240,6 +240,22 @@ void action_O() {
     }
   }
 }
+
+void action_sleep() {
+  Serial.println("[ACTION SLEEP] Initiating Safe Shutdown...");
+  
+  for (int i = 0; i < 12; i++) {
+    pca1.setPWM(i, 0, 0); 
+  }
+  
+  for (int i = 0; i < 10; i++) {
+    pca2.setPWM(i, 0, 0); 
+  }
+  
+  stateLock = 0; 
+  
+  Serial.println("[ACTION SLEEP] Servos offline. Safe to unplug LiPo.");
+}
 //=============================================
 
 //===============BNO055=======================
@@ -287,6 +303,7 @@ void servoTask(void *pvParameters) {
         case 3: action_right(); break;
         case 6: action_X();     break;
         case 7: action_O();     break;
+        case 8: action_sleep(); break;
         default: break;
       }
     }
