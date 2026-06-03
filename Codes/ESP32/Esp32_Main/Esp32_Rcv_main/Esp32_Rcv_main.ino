@@ -27,8 +27,8 @@ Adafruit_PWMServoDriver pca1 = Adafruit_PWMServoDriver(0x40); //MG90S
 Adafruit_PWMServoDriver pca2 = Adafruit_PWMServoDriver(0x41); //MG996R
 Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 
-#define SERVO_MIN  150
-#define SERVO_MAX  600
+#define SERVO_MIN  160
+#define SERVO_MAX  565
 #define PWM_FREQ   50
 
 QueueHandle_t commandQueue; //Create Queue
@@ -84,9 +84,14 @@ void smoothSweepPair(Adafruit_PWMServoDriver &pca, uint8_t ch1, uint8_t ch2, flo
 
 void action_default() {
   //Legs
-  smoothSweepPair(pca2, 4, 7, cur_pca2[4], 90.0f, 10); 
-  smoothSweepPair(pca2, 5, 8, cur_pca2[5], 90.0f, 10); 
-  smoothSweepPair(pca2, 6, 9, cur_pca2[6], 90.0f, 10);
+  smoothSweepPair(pca2, 4, 255, cur_pca2[4], 90.0f, 10); 
+  smoothSweepPair(pca2, 7, 255, cur_pca2[7], 90.0f, 10);
+  smoothSweepPair(pca2, 5, 255, cur_pca2[5], 90.0f, 10); 
+  smoothSweepPair(pca2, 8, 255, cur_pca2[8], 90.0f, 10);
+  smoothSweepPair(pca2, 6, 255, cur_pca2[6], 90.0f, 10); 
+  smoothSweepPair(pca2, 9, 255, cur_pca2[9], 90.0f, 10);
+  // smoothSweepPair(pca2, 5, 8, cur_pca2[5], 90.0f, 10); 
+  // smoothSweepPair(pca2, 6, 9, cur_pca2[6], 90.0f, 10);
 
   //Arms
   smoothSweepPair(pca2, 0, 255, cur_pca2[0], 150.0f, 10);
@@ -94,39 +99,35 @@ void action_default() {
   smoothSweepPair(pca2, 1, 255, cur_pca2[1], 150.0f, 10);
   smoothSweepPair(pca2, 3, 255, cur_pca2[3], 30.0f, 15);
 
-  //Shells
-  for (float a = 0.0f; a <= 90.0f; a += 2.0f) {
-    for(int i=0; i<12; i++) {
-      if (a >= cur_pca1[i]) pca1_SetAngle(i, a);
-    }
-    vTaskDelay(pdMS_TO_TICKS(10));
-  }
+  // //Shells
+  // for (float a = 0.0f; a <= 90.0f; a += 2.0f) {
+  //   for(int i=0; i<12; i++) {
+  //     if (a >= cur_pca1[i]) pca1_SetAngle(i, a);
+  //   }
+  //   vTaskDelay(pdMS_TO_TICKS(10));
+  // }
 }
 
 void action_up() {
-  if (stateLock == 1 && zone == 0)
-  {
-    // [Shells] //////////////////////////////
-    pca1_SetAngle( 0, 90.0f);
-    pca1_SetAngle( 1, 90.0f);
-  }
-  else if (stateLock == 1 && zone == 1)
-  {
-    // [Shells] //////////////////////////////
-    pca1_SetAngle( 0, 90.0f);
-    pca1_SetAngle( 1, 90.0f);
-  }
-  else if (stateLock == 1 && zone == 2)
-  {
-    // [Shells] //////////////////////////////
-    pca1_SetAngle( 0, 90.0f);
-    pca1_SetAngle( 1, 90.0f);
-  }
-  else if (stateLock == 1 && zone == 3)
-  {
-    // [Shells] //////////////////////////////
-    pca1_SetAngle( 0, 90.0f);
-    pca1_SetAngle( 1, 90.0f);
+  if (stateLock == 1) {
+    check_BNO_Zone(); 
+
+    if (zone == 0) {
+      pca1_SetAngle(0, 90.0f);
+      pca1_SetAngle(1, 90.0f);
+    }
+    else if (zone == 1) {
+      pca1_SetAngle(0, 90.0f);
+      pca1_SetAngle(1, 90.0f);
+    }
+    else if (zone == 2) {
+      pca1_SetAngle(0, 90.0f);
+      pca1_SetAngle(1, 90.0f);
+    }
+    else if (zone == 3) {
+      pca1_SetAngle(0, 90.0f);
+      pca1_SetAngle(1, 90.0f);
+    }
   }
 }
 
@@ -208,36 +209,39 @@ void action_X() {
 void action_O() {
   if (stateLock == 0)
   {  
-    stateLock = 1; 
-    // [LEGS] //////////////////////////////
-    smoothSweepPair(pca2, 4, 255, cur_pca2[4], 0.0f, 15);
-    smoothSweepPair(pca2, 7, 255, cur_pca2[7], 180.0f, 15);
-    vTaskDelay(pdMS_TO_TICKS(300));
+    // stateLock = 1; 
+  //   // [LEGS] //////////////////////////////
+  //   smoothSweepPair(pca2, 4, 255, cur_pca2[4], 0.0f, 15);
+  //   smoothSweepPair(pca2, 7, 255, cur_pca2[7], 180.0f, 15);
+  //   vTaskDelay(pdMS_TO_TICKS(300));
 
-    smoothSweepPair(pca2, 5, 255, cur_pca2[5], 60.0f, 15);
-    smoothSweepPair(pca2, 8, 255, cur_pca2[8], 120.0f, 15);
-    vTaskDelay(pdMS_TO_TICKS(500));
+  //   smoothSweepPair(pca2, 5, 255, cur_pca2[5], 60.0f, 15);
+  //   smoothSweepPair(pca2, 8, 255, cur_pca2[8], 120.0f, 15);
+  //   vTaskDelay(pdMS_TO_TICKS(500));
 
-    smoothSweepPair(pca2, 6, 255, cur_pca2[6], 30.0f, 15);
-    smoothSweepPair(pca2, 9, 255, cur_pca2[9], 150.0f, 15);
-    vTaskDelay(pdMS_TO_TICKS(300));
+  //   smoothSweepPair(pca2, 6, 255, cur_pca2[6], 30.0f, 15);
+  //   smoothSweepPair(pca2, 9, 255, cur_pca2[9], 150.0f, 15);
+  //   vTaskDelay(pdMS_TO_TICKS(300));
 
-    // [ARMS] //////////////////////////////
-    smoothSweepPair(pca2, 0, 255, cur_pca2[0], 180.0f, 15);
-    smoothSweepPair(pca2, 2, 255, cur_pca2[2], 0.0f, 15);
-    vTaskDelay(pdMS_TO_TICKS(500));
+  //   // [ARMS] //////////////////////////////
+  //   smoothSweepPair(pca2, 0, 255, cur_pca2[0], 180.0f, 15);
+  //   smoothSweepPair(pca2, 2, 255, cur_pca2[2], 0.0f, 15);
+  //   vTaskDelay(pdMS_TO_TICKS(500));
     
-    smoothSweepPair(pca2, 1, 255, cur_pca2[1], 150.0f, 15);
-    smoothSweepPair(pca2, 3, 255, cur_pca2[3], 30.0f, 15);
-    vTaskDelay(pdMS_TO_TICKS(500));
+  //   smoothSweepPair(pca2, 1, 255, cur_pca2[1], 150.0f, 15);
+  //   smoothSweepPair(pca2, 3, 255, cur_pca2[3], 30.0f, 15);
+  //   vTaskDelay(pdMS_TO_TICKS(500));
 
-    // [Shells] //////////////////////////////
-    for (float a = 90.0f; a >= 0.0f; a -= 2.0f) {
-      for(int i=0; i<12; i++) { 
-        if (a <= cur_pca1[i]) pca1_SetAngle(i, a);
-      }
-      vTaskDelay(pdMS_TO_TICKS(10));
-    }
+  //   // [Shells] //////////////////////////////
+  //   for (float a = 90.0f; a >= 0.0f; a -= 2.0f) {
+  //     for(int i=0; i<12; i++) { 
+  //       if (a <= cur_pca1[i]) pca1_SetAngle(i, a);
+  //     }
+  //     vTaskDelay(pdMS_TO_TICKS(10));
+    // }
+    smoothSweepPair(pca2, 6, 255, cur_pca2[6], 30.0f, 5);
+    smoothSweepPair(pca2, 9, 255, cur_pca2[9], 30.0f, 5);
+    stateLock = 1;
   }
 }
 
@@ -259,21 +263,15 @@ void action_sleep() {
 //=============================================
 
 //===============BNO055=======================
-void bnoTask(void *pvParameters) {
-  vTaskDelay(pdMS_TO_TICKS(500));
-  for (;;) {
-    sensors_event_t orientEvent;
-    bno.getEvent(&orientEvent, Adafruit_BNO055::VECTOR_EULER);
-    float roll = orientEvent.orientation.z;
-
-    if      (roll > -30  && roll <= 30)   zone = 0;
-    else if (roll > 30   && roll <= 135)  zone = 1;
-    else if (roll > 135  || roll < -135)  zone = 2;
-    else if (roll >= -135 && roll <= -30) zone = 3;
-
-    // Serial.printf("[BNO] Roll: %.1f → Zone: %d\n", roll, zone);
-    vTaskDelay(pdMS_TO_TICKS(100));
-  }
+void check_BNO_Zone() {
+  sensors_event_t orientEvent;
+  bno.getEvent(&orientEvent, Adafruit_BNO055::VECTOR_EULER);
+  float roll = orientEvent.orientation.z;
+  
+  if      (roll > -30   && roll <= 30)   zone = 0;
+  else if (roll > 30    && roll <= 135)  zone = 1;
+  else if (roll > 135   || roll < -135)  zone = 2;
+  else if (roll >= -135 && roll <= -30)  zone = 3;
 }
 
 // ================================================================
@@ -319,6 +317,9 @@ void setup() {
   pca1.begin(); pca1.setPWMFreq(PWM_FREQ);
   pca2.begin(); pca2.setPWMFreq(PWM_FREQ);
   
+  for(int i = 0; i < 12; i++) cur_pca1[i] = 90.0f;
+  for(int i = 0; i < 10; i++) cur_pca2[i] = 90.0f;
+
   if (!bno.begin()) {
     Serial.println("BNO055 not found");
     while (1);
@@ -332,7 +333,6 @@ void setup() {
   }
 
   xTaskCreatePinnedToCore(servoTask, "ServoTask", 4096, NULL, 1, NULL, 1);
-  xTaskCreatePinnedToCore(bnoTask,   "BNOTask",   4096, NULL, 1, NULL, 0);
 
   WiFi.mode(WIFI_STA);
   if (esp_now_init() != ESP_OK) {
