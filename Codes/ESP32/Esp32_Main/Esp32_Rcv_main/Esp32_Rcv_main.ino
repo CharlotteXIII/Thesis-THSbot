@@ -80,6 +80,27 @@ void smoothSweepPair(Adafruit_PWMServoDriver &pca, uint8_t ch1, uint8_t ch2, flo
 }
 //=============================================
 
+//===========Smooth Sweep Dual======================
+void smoothSweepDual(Adafruit_PWMServoDriver &pca,
+                     uint8_t chA, float startA, float targetA,
+                     uint8_t chB, float startB, float targetB,
+                     int stepDelay_ms) {
+  float a = startA;
+  float b = startB;
+  while (a != targetA || b != targetB) {
+    if (a > targetA) a -= 1.0f;
+    else if (a < targetA) a += 1.0f;
+
+    if (b > targetB) b -= 1.0f;
+    else if (b < targetB) b += 1.0f;
+
+    if (&pca == &pca1) { pca1_SetAngle(chA, a); pca1_SetAngle(chB, b); }
+    else               { pca2_SetAngle(chA, a); pca2_SetAngle(chB, b); }
+    vTaskDelay(pdMS_TO_TICKS(stepDelay_ms));
+  }
+}
+//=============================================
+
 //===============ACTIONs=======================
 
 void action_default() {
@@ -239,8 +260,7 @@ void action_O() {
   //     }
   //     vTaskDelay(pdMS_TO_TICKS(10));
     // }
-    smoothSweepPair(pca2, 6, 255, cur_pca2[6], 30.0f, 5);
-    smoothSweepPair(pca2, 9, 255, cur_pca2[9], 30.0f, 5);
+    smoothSweepDual(pca2, 6, cur_pca2[6], 30.0f,9, cur_pca2[9], 150.0f, 5);
     stateLock = 1;
   }
 }
