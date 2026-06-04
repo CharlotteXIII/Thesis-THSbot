@@ -105,20 +105,13 @@ void smoothSweepDual(Adafruit_PWMServoDriver &pca,
 
 void action_default() {
   //Legs
-  smoothSweepPair(pca2, 4, 255, cur_pca2[4], 90.0f, 10); 
-  smoothSweepPair(pca2, 7, 255, cur_pca2[7], 90.0f, 10);
-  smoothSweepPair(pca2, 5, 255, cur_pca2[5], 90.0f, 10); 
-  smoothSweepPair(pca2, 8, 255, cur_pca2[8], 90.0f, 10);
-  smoothSweepPair(pca2, 6, 255, cur_pca2[6], 90.0f, 10); 
-  smoothSweepPair(pca2, 9, 255, cur_pca2[9], 90.0f, 10);
-  // smoothSweepPair(pca2, 5, 8, cur_pca2[5], 90.0f, 10); 
-  // smoothSweepPair(pca2, 6, 9, cur_pca2[6], 90.0f, 10);
+  smoothSweepDual(pca2, 4, cur_pca2[4], 90.0f,7, cur_pca2[7], 90.0f, 5);
+  smoothSweepDual(pca2, 5, cur_pca2[5], 90.0f,8, cur_pca2[8], 90.0f, 5);
+  smoothSweepDual(pca2, 6, cur_pca2[6], 90.0f,9, cur_pca2[9], 90.0f, 5);
 
   //Arms
-  smoothSweepPair(pca2, 0, 255, cur_pca2[0], 150.0f, 10);
-  smoothSweepPair(pca2, 2, 255, cur_pca2[2], 30.0f, 10);
-  smoothSweepPair(pca2, 1, 255, cur_pca2[1], 150.0f, 10);
-  smoothSweepPair(pca2, 3, 255, cur_pca2[3], 30.0f, 15);
+  smoothSweepDual(pca2, 0, cur_pca2[0], 150.0f,2, cur_pca2[2], 30.0f, 5);
+  smoothSweepDual(pca2, 1, cur_pca2[1], 150.0f,3, cur_pca2[3], 30.0f, 5);
 
   // //Shells
   // for (float a = 0.0f; a <= 90.0f; a += 2.0f) {
@@ -260,6 +253,7 @@ void action_O() {
   //     }
   //     vTaskDelay(pdMS_TO_TICKS(10));
     // }
+    smoothSweepDual(pca2, 7, cur_pca2[7], 150.0f,4, cur_pca2[4], 30.0f, 5);
     smoothSweepDual(pca2, 6, cur_pca2[6], 30.0f,9, cur_pca2[9], 150.0f, 5);
     stateLock = 1;
   }
@@ -336,9 +330,30 @@ void setup() {
   Wire.begin(21, 22);
   pca1.begin(); pca1.setPWMFreq(PWM_FREQ);
   pca2.begin(); pca2.setPWMFreq(PWM_FREQ);
-  
-  for(int i = 0; i < 12; i++) cur_pca1[i] = 90.0f;
-  for(int i = 0; i < 10; i++) cur_pca2[i] = 90.0f;
+
+cur_pca1[ 0] = 90.0f;
+cur_pca1[ 1] = 90.0f;
+cur_pca1[ 2] = 90.0f;
+cur_pca1[ 3] = 90.0f;
+cur_pca1[ 4] = 90.0f;
+cur_pca1[ 5] = 90.0f;
+cur_pca1[ 6] = 90.0f;
+cur_pca1[ 7] = 90.0f;
+cur_pca1[ 8] = 90.0f;
+cur_pca1[ 9] = 90.0f;
+cur_pca1[10] = 90.0f;
+cur_pca1[11] = 90.0f;
+
+cur_pca2[0] = 150.0f;
+cur_pca2[1] = 150.0f;
+cur_pca2[2] =  30.0f;
+cur_pca2[3] =  30.0f;
+cur_pca2[4] = 90.0f;
+cur_pca2[5] = 90.0f;
+cur_pca2[6] = 90.0f;
+cur_pca2[7] = 90.0f;
+cur_pca2[8] = 90.0f;
+cur_pca2[9] = 90.0f;  
 
   if (!bno.begin()) {
     Serial.println("BNO055 not found");
