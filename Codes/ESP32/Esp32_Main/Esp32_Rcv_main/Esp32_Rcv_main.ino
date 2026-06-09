@@ -123,85 +123,86 @@ void action_default() {
 }
 
 void action_up() {
-  if (stateLock == 1) {
-    check_BNO_Zone(); 
+  // if (stateLock == 1) {
+    // check_BNO_Zone(); 
 
-    if (zone == 0) {
-      pca1_SetAngle(0, 90.0f);
-      pca1_SetAngle(1, 90.0f);
-    }
-    else if (zone == 1) {
-      pca1_SetAngle(0, 90.0f);
-      pca1_SetAngle(1, 90.0f);
-    }
-    else if (zone == 2) {
-      pca1_SetAngle(0, 90.0f);
-      pca1_SetAngle(1, 90.0f);
-    }
-    else if (zone == 3) {
-      pca1_SetAngle(0, 90.0f);
-      pca1_SetAngle(1, 90.0f);
-    }
-  }
+    // if (zone == 0) {
+    //   pca1_SetAngle(0, 90.0f);
+    //   pca1_SetAngle(1, 90.0f);
+    // }
+    // else if (zone == 1) {
+    //   pca1_SetAngle(0, 90.0f);
+    //   pca1_SetAngle(1, 90.0f);
+    // }
+    // else if (zone == 2) {
+    //   pca1_SetAngle(0, 90.0f);
+    //   pca1_SetAngle(1, 90.0f);
+    // }
+    // else if (zone == 3) {
+    //   pca1_SetAngle(0, 90.0f);
+    //   pca1_SetAngle(1, 90.0f);
+    // } 
+  // }
+  action_default();
 }
 
 void action_left() {
-  if (stateLock == 1 && zone == 0)
-  {
-    // [Shells] //////////////////////////////
-    pca1_SetAngle( 0, 90.0f);
-    pca1_SetAngle( 1, 90.0f);
-  }
-  else if (stateLock == 1 && zone == 1)
-  {
-    // [Shells] //////////////////////////////
-    pca1_SetAngle( 0, 90.0f);
-    pca1_SetAngle( 1, 90.0f);
-  }
-  else if (stateLock == 1 && zone == 2)
-  {
-    // [Shells] //////////////////////////////
-    pca1_SetAngle( 0, 90.0f);
-    pca1_SetAngle( 1, 90.0f);
-  }
-  else if (stateLock == 1 && zone == 3)
-  {
-    // [Shells] //////////////////////////////
-    pca1_SetAngle( 0, 90.0f);
-    pca1_SetAngle( 1, 90.0f);
-  }
+  // if (stateLock == 1 && zone == 0)
+  // {
+  //   // [Shells] //////////////////////////////
+  //   pca1_SetAngle( 0, 90.0f);
+  //   pca1_SetAngle( 1, 90.0f);
+  // }
+  // else if (stateLock == 1 && zone == 1)
+  // {
+  //   // [Shells] //////////////////////////////
+  //   pca1_SetAngle( 0, 90.0f);
+  //   pca1_SetAngle( 1, 90.0f);
+  // }
+  // else if (stateLock == 1 && zone == 2)
+  // {
+  //   // [Shells] //////////////////////////////
+  //   pca1_SetAngle( 0, 90.0f);
+  //   pca1_SetAngle( 1, 90.0f);
+  // }
+  // else if (stateLock == 1 && zone == 3)
+  // {
+  //   // [Shells] //////////////////////////////
+  //   pca1_SetAngle( 0, 90.0f);
+  //   pca1_SetAngle( 1, 90.0f);
+  // }
 }
 
 void action_right() {
-  if (stateLock == 1 && zone == 0)
-  {
-    // [Shells] //////////////////////////////
-    pca1_SetAngle( 0, 90.0f);
-    pca1_SetAngle( 1, 90.0f);
-  }
-  else if (stateLock == 1 && zone == 1)
-  {
-    // [Shells] //////////////////////////////
-    pca1_SetAngle( 0, 90.0f);
-    pca1_SetAngle( 1, 90.0f);
-  }
-  else if (stateLock == 1 && zone == 2)
-  {
-    // [Shells] //////////////////////////////
-    pca1_SetAngle( 0, 90.0f);
-    pca1_SetAngle( 1, 90.0f);
-  }
-  else if (stateLock == 1 && zone == 3)
-  {
-    // [Shells] //////////////////////////////
-    pca1_SetAngle( 0, 90.0f);
-    pca1_SetAngle( 1, 90.0f);
-  }
+  // if (stateLock == 1 && zone == 0)
+  // {
+  //   // [Shells] //////////////////////////////
+  //   pca1_SetAngle( 0, 90.0f);
+  //   pca1_SetAngle( 1, 90.0f);
+  // }
+  // else if (stateLock == 1 && zone == 1)
+  // {
+  //   // [Shells] //////////////////////////////
+  //   pca1_SetAngle( 0, 90.0f);
+  //   pca1_SetAngle( 1, 90.0f);
+  // }
+  // else if (stateLock == 1 && zone == 2)
+  // {
+  //   // [Shells] //////////////////////////////
+  //   pca1_SetAngle( 0, 90.0f);
+  //   pca1_SetAngle( 1, 90.0f);
+  // }
+  // else if (stateLock == 1 && zone == 3)
+  // {
+  //   // [Shells] //////////////////////////////
+  //   pca1_SetAngle( 0, 90.0f);
+  //   pca1_SetAngle( 1, 90.0f);
+  // }
 }
 
 void action_X() {
   // Not Create stand up sequence yet
-  if (stateLock == 1){
+  // if (stateLock == 1){
   // // [LEGS]
   //   smoothSweepPair(pca2, 6, 9, 0.0f, 90.0f, 10);
   //   smoothSweepPair(pca2, 5, 8, 0.0f, 90.0f, 10);
@@ -215,14 +216,21 @@ void action_X() {
   //     for(int i=0; i<12; i++) { pca1_SetAngle(i, a); }
   //     vTaskDelay(pdMS_TO_TICKS(10));
   //   }
-    action_default();
-    stateLock = 0;
-  }
+  //   stateLock = 0;
+  // }
+
+  //test horn
+  // smoothSweepPair(pca2, 7, 255, cur_pca2[7], 0.0f, 5);
+  // smoothSweepPair(pca2, 8, 255, cur_pca2[8], 0.0f, 5);
+  // smoothSweepPair(pca2, 9, 255, cur_pca2[9], 0.0f, 5);
+  smoothSweepPair(pca2, 4, 255, cur_pca2[4], 0.0f, 5);
+  smoothSweepPair(pca2, 5, 255, cur_pca2[5], 0.0f, 5);
+  smoothSweepPair(pca2, 6, 255, cur_pca2[6], 0.0f, 5);
 }
 
 void action_O() {
-  if (stateLock == 0)
-  {  
+  // if (stateLock == 0)
+  // {  
     // stateLock = 1; 
   //   // [LEGS] //////////////////////////////
   //   smoothSweepPair(pca2, 4, 255, cur_pca2[4], 0.0f, 15);
@@ -253,10 +261,18 @@ void action_O() {
   //     }
   //     vTaskDelay(pdMS_TO_TICKS(10));
     // }
-    smoothSweepDual(pca2, 7, cur_pca2[7], 150.0f,4, cur_pca2[4], 30.0f, 5);
-    smoothSweepDual(pca2, 6, cur_pca2[6], 30.0f,9, cur_pca2[9], 150.0f, 5);
-    stateLock = 1;
-  }
+    // smoothSweepDual(pca2, 7, cur_pca2[7], 150.0f,4, cur_pca2[4], 30.0f, 5);
+    // smoothSweepDual(pca2, 6, cur_pca2[6], 30.0f,9, cur_pca2[9], 150.0f, 5);
+
+  //   stateLock = 1;
+  // }
+  //test horn
+  // smoothSweepPair(pca2, 7, 255, cur_pca2[7], 180.0f, 5);
+  // smoothSweepPair(pca2, 8, 255, cur_pca2[8], 120.0f, 5);
+  // smoothSweepPair(pca2, 9, 255, cur_pca2[9], 150.0f, 5);
+  smoothSweepPair(pca2, 4, 255, cur_pca2[4], 90.0f, 5);
+  smoothSweepPair(pca2, 5, 255, cur_pca2[5], 90.0f, 5);
+  smoothSweepPair(pca2, 6, 255, cur_pca2[6], 90.0f, 5);
 }
 
 void action_sleep() {
