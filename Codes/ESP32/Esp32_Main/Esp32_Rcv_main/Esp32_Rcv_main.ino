@@ -105,13 +105,13 @@ void smoothSweepDual(Adafruit_PWMServoDriver &pca,
 
 void action_default() {
   //Legs
-  smoothSweepDual(pca2, 4, cur_pca2[4], 90.0f,7, cur_pca2[7], 90.0f, 5);
-  smoothSweepDual(pca2, 5, cur_pca2[5], 90.0f,8, cur_pca2[8], 90.0f, 5);
-  smoothSweepDual(pca2, 6, cur_pca2[6], 90.0f,9, cur_pca2[9], 90.0f, 5);
+  // smoothSweepDual(pca2, 4, cur_pca2[4], 90.0f,7, cur_pca2[7], 90.0f, 5);
+  // smoothSweepDual(pca2, 5, cur_pca2[5], 90.0f,8, cur_pca2[8], 90.0f, 5);
+  // smoothSweepDual(pca2, 6, cur_pca2[6], 90.0f,9, cur_pca2[9], 90.0f, 5);
 
-  //Arms
-  smoothSweepDual(pca2, 0, cur_pca2[0], 150.0f,2, cur_pca2[2], 30.0f, 5);
-  smoothSweepDual(pca2, 1, cur_pca2[1], 150.0f,3, cur_pca2[3], 30.0f, 5);
+  // //Arms
+  // smoothSweepDual(pca2, 0, cur_pca2[0], 150.0f,2, cur_pca2[2], 30.0f, 5);
+  // smoothSweepDual(pca2, 1, cur_pca2[1], 150.0f,3, cur_pca2[3], 30.0f, 5);
 
   // //Shells
   // for (float a = 0.0f; a <= 90.0f; a += 2.0f) {
@@ -220,12 +220,16 @@ void action_X() {
   // }
 
   //test horn
-  // smoothSweepPair(pca2, 7, 255, cur_pca2[7], 0.0f, 5);
+  // smoothSweepPair(pca2, 7, 255, cur_pca2[7], 90.0f, 5);
   // smoothSweepPair(pca2, 8, 255, cur_pca2[8], 0.0f, 5);
   // smoothSweepPair(pca2, 9, 255, cur_pca2[9], 0.0f, 5);
-  smoothSweepPair(pca2, 4, 255, cur_pca2[4], 0.0f, 5);
-  smoothSweepPair(pca2, 5, 255, cur_pca2[5], 0.0f, 5);
-  smoothSweepPair(pca2, 6, 255, cur_pca2[6], 0.0f, 5);
+  // smoothSweepPair(pca2, 4, 255, cur_pca2[4], 0.0f, 5);
+  // smoothSweepPair(pca2, 5, 255, cur_pca2[5], 0.0f, 5);
+  // smoothSweepPair(pca2, 6, 255, cur_pca2[6], 0.0f, 5);
+  // smoothSweepDual(pca2, 0, cur_pca2[0], 180.0f,2, cur_pca2[2], 0.0f, 5);
+  // smoothSweepDual(pca2, 1, cur_pca2[1], 180.0f,3, cur_pca2[3], 0.0f, 5);
+  smoothSweepPair(pca2, 0, 255, cur_pca2[0], 180.0f, 5);
+
 }
 
 void action_O() {
@@ -270,9 +274,12 @@ void action_O() {
   // smoothSweepPair(pca2, 7, 255, cur_pca2[7], 180.0f, 5);
   // smoothSweepPair(pca2, 8, 255, cur_pca2[8], 120.0f, 5);
   // smoothSweepPair(pca2, 9, 255, cur_pca2[9], 150.0f, 5);
-  smoothSweepPair(pca2, 4, 255, cur_pca2[4], 90.0f, 5);
-  smoothSweepPair(pca2, 5, 255, cur_pca2[5], 90.0f, 5);
-  smoothSweepPair(pca2, 6, 255, cur_pca2[6], 90.0f, 5);
+  // smoothSweepPair(pca2, 4, 255, cur_pca2[4], 90.0f, 5);
+  // smoothSweepPair(pca2, 5, 255, cur_pca2[5], 90.0f, 5);
+  // smoothSweepPair(pca2, 6, 255, cur_pca2[6], 90.0f, 5);
+  // smoothSweepDual(pca2, 0, cur_pca2[0], 90.0f,2, cur_pca2[2], 90.0f, 5);
+  // smoothSweepDual(pca2, 1, cur_pca2[1], 90.0f,3, cur_pca2[3], 90.0f, 5);
+  smoothSweepPair(pca2, 0, 255, cur_pca2[0], 90.0f, 5);
 }
 
 void action_sleep() {
@@ -320,7 +327,7 @@ void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len) {
 void servoTask(void *pvParameters) {
   int cmd;
   vTaskDelay(pdMS_TO_TICKS(200));
-  action_default();
+  // action_default();
 
   for (;;) {
     if (xQueueReceive(commandQueue, &cmd, portMAX_DELAY) == pdTRUE) {
