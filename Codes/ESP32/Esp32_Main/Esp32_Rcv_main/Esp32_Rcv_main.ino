@@ -27,8 +27,12 @@ Adafruit_PWMServoDriver pca1 = Adafruit_PWMServoDriver(0x40); //MG90S
 Adafruit_PWMServoDriver pca2 = Adafruit_PWMServoDriver(0x41); //MG996R
 Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 
-#define SERVO_MIN  160
-#define SERVO_MAX  565
+#define PCA1_MIN  100
+#define PCA1_MAX  570
+
+#define PCA2_MIN  160
+#define PCA2_MAX  565
+
 #define PWM_FREQ   50
 
 QueueHandle_t commandQueue; //Create Queue
@@ -48,7 +52,7 @@ typedef struct struct_message {
 void pca1_SetAngle(uint8_t ch, float angle) {
   if (angle < 0.0f)   angle = 0.0f;
   if (angle > 180.0f) angle = 180.0f;
-  uint16_t pulse = SERVO_MIN + (uint16_t)((angle / 180.0f) * (SERVO_MAX - SERVO_MIN));
+  uint16_t pulse = PCA1_MIN + (uint16_t)((angle / 180.0f) * (PCA1_MAX - PCA1_MIN));
   pca1.setPWM(ch, 0, pulse);
   cur_pca1[ch] = angle;
 }
@@ -56,7 +60,7 @@ void pca1_SetAngle(uint8_t ch, float angle) {
 void pca2_SetAngle(uint8_t ch, float angle) {
   if (angle < 0.0f)   angle = 0.0f;
   if (angle > 180.0f) angle = 180.0f;
-  uint16_t pulse = SERVO_MIN + (uint16_t)((angle / 180.0f) * (SERVO_MAX - SERVO_MIN));
+  uint16_t pulse = PCA2_MIN + (uint16_t)((angle / 180.0f) * (PCA2_MAX - PCA2_MIN));
   pca2.setPWM(ch, 0, pulse);
   cur_pca2[ch] = angle;
 }
@@ -104,22 +108,28 @@ void smoothSweepDual(Adafruit_PWMServoDriver &pca,
 //===============ACTIONs=======================
 
 void action_default() {
-  //Legs
-  // smoothSweepDual(pca2, 4, cur_pca2[4], 90.0f,7, cur_pca2[7], 90.0f, 5);
-  // smoothSweepDual(pca2, 5, cur_pca2[5], 90.0f,8, cur_pca2[8], 90.0f, 5);
-  // smoothSweepDual(pca2, 6, cur_pca2[6], 90.0f,9, cur_pca2[9], 90.0f, 5);
+  Legs
+  smoothSweepDual(pca2, 4, cur_pca2[4], 90.0f,7, cur_pca2[7], 90.0f, 5);
+  smoothSweepDual(pca2, 5, cur_pca2[5], 90.0f,8, cur_pca2[8], 90.0f, 5);
+  smoothSweepDual(pca2, 6, cur_pca2[6], 90.0f,9, cur_pca2[9], 90.0f, 5);
 
-  // //Arms
-  // smoothSweepDual(pca2, 0, cur_pca2[0], 150.0f,2, cur_pca2[2], 30.0f, 5);
-  // smoothSweepDual(pca2, 1, cur_pca2[1], 150.0f,3, cur_pca2[3], 30.0f, 5);
+  //Arms
+  smoothSweepDual(pca2, 0, cur_pca2[0], 150.0f,2, cur_pca2[2], 30.0f, 5);
+  smoothSweepDual(pca2, 1, cur_pca2[1], 150.0f,3, cur_pca2[3], 30.0f, 5);
 
-  // //Shells
+  //Shells
   // for (float a = 0.0f; a <= 90.0f; a += 2.0f) {
   //   for(int i=0; i<12; i++) {
   //     if (a >= cur_pca1[i]) pca1_SetAngle(i, a);
   //   }
   //   vTaskDelay(pdMS_TO_TICKS(10));
   // }
+  smoothSweepDual(pca1, 1, cur_pca1[1], 90.0f,3, cur_pca2[3], 90.0f, 5);
+  smoothSweepDual(pca1, 2, cur_pca1[2], 90.0f,4, cur_pca2[4], 90.0f, 5);
+  smoothSweepDual(pca1, 5, cur_pca1[5], 90.0f,6, cur_pca2[6], 90.0f, 5);
+  smoothSweepDual(pca1, 7, cur_pca1[7], 90.0f,8, cur_pca2[8], 90.0f, 5);
+  smoothSweepDual(pca1, 9, cur_pca1[9], 90.0f,11, cur_pca2[11], 90.0f, 5);
+  smoothSweepDual(pca1, 10, cur_pca1[10], 90.0f,12, cur_pca2[12], 90.0f, 5);
 }
 
 void action_up() {
@@ -228,8 +238,8 @@ void action_X() {
   // smoothSweepPair(pca2, 6, 255, cur_pca2[6], 0.0f, 5);
   // smoothSweepDual(pca2, 0, cur_pca2[0], 180.0f,2, cur_pca2[2], 0.0f, 5);
   // smoothSweepDual(pca2, 1, cur_pca2[1], 180.0f,3, cur_pca2[3], 0.0f, 5);
-  smoothSweepPair(pca2, 0, 255, cur_pca2[0], 180.0f, 5);
-
+  // smoothSweepPair(pca2, 0, 255, cur_pca2[0], 180.0f, 5);
+  smoothSweepPair(pca1, 0, 255, cur_pca1[0], 0.0f, 5);
 }
 
 void action_O() {
@@ -279,7 +289,8 @@ void action_O() {
   // smoothSweepPair(pca2, 6, 255, cur_pca2[6], 90.0f, 5);
   // smoothSweepDual(pca2, 0, cur_pca2[0], 90.0f,2, cur_pca2[2], 90.0f, 5);
   // smoothSweepDual(pca2, 1, cur_pca2[1], 90.0f,3, cur_pca2[3], 90.0f, 5);
-  smoothSweepPair(pca2, 0, 255, cur_pca2[0], 90.0f, 5);
+  // smoothSweepPair(pca2, 0, 255, cur_pca2[0], 90.0f, 5);
+  smoothSweepPair(pca1, 0, 255, cur_pca1[0], 90.0f, 5);
 }
 
 void action_sleep() {

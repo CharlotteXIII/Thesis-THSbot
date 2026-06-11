@@ -2,9 +2,9 @@
 #include <Adafruit_PWMServoDriver.h>
 
 // เลือกบอร์ด pca2 (0x41) สำหรับเทสต์ MG996R
-Adafruit_PWMServoDriver pca = Adafruit_PWMServoDriver(0x41); 
+Adafruit_PWMServoDriver pca = Adafruit_PWMServoDriver(0x40); 
 
-const int testChannel = 6; // เสียบเซอร์โวที่จะเทสต์ไว้ที่ช่อง 0
+const int testChannel = 0; // เสียบเซอร์โวที่จะเทสต์ไว้ที่ช่อง 0
 
 void setup() {
   Serial.begin(115200);
