@@ -91,12 +91,16 @@ void smoothSweepDual(Adafruit_PWMServoDriver &pca,
                      int stepDelay_ms) {
   float a = startA;
   float b = startB;
-  while (a != targetA || b != targetB) {
-    if (a > targetA) a -= 1.0f;
-    else if (a < targetA) a += 1.0f;
 
-    if (b > targetB) b -= 1.0f;
-    else if (b < targetB) b += 1.0f;
+  // เปลี่ยนจาก != เป็น fabs เพื่อป้องกัน float ไม่เท่ากันพอดี
+  while (fabs(a - targetA) > 0.5f || fabs(b - targetB) > 0.5f) {
+    if (a > targetA + 0.5f)      a -= 1.0f;
+    else if (a < targetA - 0.5f) a += 1.0f;
+    else                          a = targetA;  // snap ถึงที่หมาย
+
+    if (b > targetB + 0.5f)      b -= 1.0f;
+    else if (b < targetB - 0.5f) b += 1.0f;
+    else                          b = targetB;
 
     if (&pca == &pca1) { pca1_SetAngle(chA, a); pca1_SetAngle(chB, b); }
     else               { pca2_SetAngle(chA, a); pca2_SetAngle(chB, b); }
@@ -108,28 +112,33 @@ void smoothSweepDual(Adafruit_PWMServoDriver &pca,
 //===============ACTIONs=======================
 
 void action_default() {
-  Legs
+  // Legs
   smoothSweepDual(pca2, 4, cur_pca2[4], 90.0f,7, cur_pca2[7], 90.0f, 5);
+  vTaskDelay(pdMS_TO_TICKS(300));
   smoothSweepDual(pca2, 5, cur_pca2[5], 90.0f,8, cur_pca2[8], 90.0f, 5);
+  vTaskDelay(pdMS_TO_TICKS(300));
   smoothSweepDual(pca2, 6, cur_pca2[6], 90.0f,9, cur_pca2[9], 90.0f, 5);
+  vTaskDelay(pdMS_TO_TICKS(300));
 
   //Arms
   smoothSweepDual(pca2, 0, cur_pca2[0], 150.0f,2, cur_pca2[2], 30.0f, 5);
+  vTaskDelay(pdMS_TO_TICKS(300));
   smoothSweepDual(pca2, 1, cur_pca2[1], 150.0f,3, cur_pca2[3], 30.0f, 5);
+  vTaskDelay(pdMS_TO_TICKS(300));
 
   //Shells
-  // for (float a = 0.0f; a <= 90.0f; a += 2.0f) {
-  //   for(int i=0; i<12; i++) {
-  //     if (a >= cur_pca1[i]) pca1_SetAngle(i, a);
-  //   }
-  //   vTaskDelay(pdMS_TO_TICKS(10));
-  // }
-  smoothSweepDual(pca1, 1, cur_pca1[1], 90.0f,3, cur_pca2[3], 90.0f, 5);
-  smoothSweepDual(pca1, 2, cur_pca1[2], 90.0f,4, cur_pca2[4], 90.0f, 5);
-  smoothSweepDual(pca1, 5, cur_pca1[5], 90.0f,6, cur_pca2[6], 90.0f, 5);
-  smoothSweepDual(pca1, 7, cur_pca1[7], 90.0f,8, cur_pca2[8], 90.0f, 5);
-  smoothSweepDual(pca1, 9, cur_pca1[9], 90.0f,11, cur_pca2[11], 90.0f, 5);
-  smoothSweepDual(pca1, 10, cur_pca1[10], 90.0f,12, cur_pca2[12], 90.0f, 5);
+  smoothSweepDual(pca1, 0, cur_pca1[0], 90.0f,2, cur_pca1[2], 90.0f, 5);
+  vTaskDelay(pdMS_TO_TICKS(30));
+  smoothSweepDual(pca1, 1, cur_pca1[1], 90.0f,3, cur_pca1[3], 90.0f, 5);
+  vTaskDelay(pdMS_TO_TICKS(30));
+  smoothSweepDual(pca1, 4, cur_pca1[4], 90.0f,5, cur_pca1[5], 90.0f, 5);
+  vTaskDelay(pdMS_TO_TICKS(30));
+  smoothSweepDual(pca1, 6, cur_pca1[6], 90.0f,7, cur_pca1[7], 90.0f, 5);
+  vTaskDelay(pdMS_TO_TICKS(30));
+  smoothSweepDual(pca1, 8, cur_pca1[8], 90.0f,10, cur_pca1[10], 90.0f, 5);
+  vTaskDelay(pdMS_TO_TICKS(30));
+  smoothSweepDual(pca1, 9, cur_pca1[9], 90.0f,11, cur_pca1[11], 90.0f, 5);
+  vTaskDelay(pdMS_TO_TICKS(30));
 }
 
 void action_up() {
@@ -153,7 +162,7 @@ void action_up() {
     //   pca1_SetAngle(1, 90.0f);
     // } 
   // }
-  action_default();
+  
 }
 
 void action_left() {
@@ -212,87 +221,55 @@ void action_right() {
 
 void action_X() {
   // Not Create stand up sequence yet
-  // if (stateLock == 1){
-  // // [LEGS]
-  //   smoothSweepPair(pca2, 6, 9, 0.0f, 90.0f, 10);
-  //   smoothSweepPair(pca2, 5, 8, 0.0f, 90.0f, 10);
-  //   smoothSweepPair(pca2, 4, 7, 0.0f, 90.0f, 10);
-  // // [ARMS]
-  //   smoothSweepPair(pca2, 0, 2, 0.0f, 30.0f, 10);
-  //   smoothSweepPair(pca2, 1, 3, 0.0f, 30.0f, 10);
-
-  // // [Shells] //////////////////////////////
-  //   for (float a = 0.0f; a <= 90.0f; a += 2.0f) {
-  //     for(int i=0; i<12; i++) { pca1_SetAngle(i, a); }
-  //     vTaskDelay(pdMS_TO_TICKS(10));
-  //   }
-  //   stateLock = 0;
-  // }
-
-  //test horn
-  // smoothSweepPair(pca2, 7, 255, cur_pca2[7], 90.0f, 5);
-  // smoothSweepPair(pca2, 8, 255, cur_pca2[8], 0.0f, 5);
-  // smoothSweepPair(pca2, 9, 255, cur_pca2[9], 0.0f, 5);
-  // smoothSweepPair(pca2, 4, 255, cur_pca2[4], 0.0f, 5);
-  // smoothSweepPair(pca2, 5, 255, cur_pca2[5], 0.0f, 5);
-  // smoothSweepPair(pca2, 6, 255, cur_pca2[6], 0.0f, 5);
-  // smoothSweepDual(pca2, 0, cur_pca2[0], 180.0f,2, cur_pca2[2], 0.0f, 5);
-  // smoothSweepDual(pca2, 1, cur_pca2[1], 180.0f,3, cur_pca2[3], 0.0f, 5);
-  // smoothSweepPair(pca2, 0, 255, cur_pca2[0], 180.0f, 5);
-  smoothSweepPair(pca1, 0, 255, cur_pca1[0], 0.0f, 5);
+  if (stateLock == 1){
+    Serial.println("[ACTION X] Abandon Transformation.");
+    stateLock = 0;
+    action_default();
+    
+  }
 }
 
 void action_O() {
-  // if (stateLock == 0)
-  // {  
-    // stateLock = 1; 
-  //   // [LEGS] //////////////////////////////
-  //   smoothSweepPair(pca2, 4, 255, cur_pca2[4], 0.0f, 15);
-  //   smoothSweepPair(pca2, 7, 255, cur_pca2[7], 180.0f, 15);
-  //   vTaskDelay(pdMS_TO_TICKS(300));
+  if (stateLock == 0)
+  {  
+    Serial.println("[ACTION O] Start Transformation.");
+    smoothSweepDual(pca2, 0, cur_pca2[0], 90.0f,2, cur_pca2[2], 90.0f, 5);
+    vTaskDelay(pdMS_TO_TICKS(500));
+    smoothSweepDual(pca2, 1, cur_pca2[1], 90.0f,3, cur_pca2[3], 90.0f, 5);
+    vTaskDelay(pdMS_TO_TICKS(500));
 
-  //   smoothSweepPair(pca2, 5, 255, cur_pca2[5], 60.0f, 15);
-  //   smoothSweepPair(pca2, 8, 255, cur_pca2[8], 120.0f, 15);
-  //   vTaskDelay(pdMS_TO_TICKS(500));
+    // [LEGS] //////////////////////////////
+    smoothSweepDual(pca2, 4, cur_pca2[4], 0.0f,7, cur_pca2[7], 180.0f, 5);
+    vTaskDelay(pdMS_TO_TICKS(300));
 
-  //   smoothSweepPair(pca2, 6, 255, cur_pca2[6], 30.0f, 15);
-  //   smoothSweepPair(pca2, 9, 255, cur_pca2[9], 150.0f, 15);
-  //   vTaskDelay(pdMS_TO_TICKS(300));
+    smoothSweepDual(pca2, 5, cur_pca2[5], 30.0f,8, cur_pca2[8], 150.0f, 5);
+    vTaskDelay(pdMS_TO_TICKS(500));
 
-  //   // [ARMS] //////////////////////////////
-  //   smoothSweepPair(pca2, 0, 255, cur_pca2[0], 180.0f, 15);
-  //   smoothSweepPair(pca2, 2, 255, cur_pca2[2], 0.0f, 15);
-  //   vTaskDelay(pdMS_TO_TICKS(500));
-    
-  //   smoothSweepPair(pca2, 1, 255, cur_pca2[1], 150.0f, 15);
-  //   smoothSweepPair(pca2, 3, 255, cur_pca2[3], 30.0f, 15);
-  //   vTaskDelay(pdMS_TO_TICKS(500));
+    smoothSweepDual(pca2, 6, cur_pca2[6], 25.0f,9, cur_pca2[9], 155.0f, 5);
+    vTaskDelay(pdMS_TO_TICKS(300));
 
-  //   // [Shells] //////////////////////////////
-  //   for (float a = 90.0f; a >= 0.0f; a -= 2.0f) {
-  //     for(int i=0; i<12; i++) { 
-  //       if (a <= cur_pca1[i]) pca1_SetAngle(i, a);
-  //     }
-  //     vTaskDelay(pdMS_TO_TICKS(10));
-    // }
-    // smoothSweepDual(pca2, 7, cur_pca2[7], 150.0f,4, cur_pca2[4], 30.0f, 5);
-    // smoothSweepDual(pca2, 6, cur_pca2[6], 30.0f,9, cur_pca2[9], 150.0f, 5);
+    // [ARMS] //////////////////////////////
+    smoothSweepDual(pca2, 0, cur_pca2[0], 180.0f,2, cur_pca2[2], 0.0f, 5);
+    vTaskDelay(pdMS_TO_TICKS(500));
+    smoothSweepDual(pca2, 1, cur_pca2[1], 150.0f,3, cur_pca2[3], 30.0f, 5);
+    vTaskDelay(pdMS_TO_TICKS(500));
 
-  //   stateLock = 1;
-  // }
-  //test horn
-  // smoothSweepPair(pca2, 7, 255, cur_pca2[7], 180.0f, 5);
-  // smoothSweepPair(pca2, 8, 255, cur_pca2[8], 120.0f, 5);
-  // smoothSweepPair(pca2, 9, 255, cur_pca2[9], 150.0f, 5);
-  // smoothSweepPair(pca2, 4, 255, cur_pca2[4], 90.0f, 5);
-  // smoothSweepPair(pca2, 5, 255, cur_pca2[5], 90.0f, 5);
-  // smoothSweepPair(pca2, 6, 255, cur_pca2[6], 90.0f, 5);
-  // smoothSweepDual(pca2, 0, cur_pca2[0], 90.0f,2, cur_pca2[2], 90.0f, 5);
-  // smoothSweepDual(pca2, 1, cur_pca2[1], 90.0f,3, cur_pca2[3], 90.0f, 5);
-  // smoothSweepPair(pca2, 0, 255, cur_pca2[0], 90.0f, 5);
-  smoothSweepPair(pca1, 0, 255, cur_pca1[0], 90.0f, 5);
+    // [Shells] //////////////////////////////
+    smoothSweepDual(pca1, 0, cur_pca1[0], 90.0f,2, cur_pca1[2], 90.0f, 5);
+    vTaskDelay(pdMS_TO_TICKS(30));
+    smoothSweepDual(pca1, 1, cur_pca1[1], 90.0f,3, cur_pca1[3], 90.0f, 5);
+    vTaskDelay(pdMS_TO_TICKS(30));
+    smoothSweepDual(pca1, 4, cur_pca1[4], 90.0f,5, cur_pca1[5], 90.0f, 5);
+    vTaskDelay(pdMS_TO_TICKS(30));
+    smoothSweepDual(pca1, 6, cur_pca1[6], 90.0f,7, cur_pca1[7], 90.0f, 5);
+    vTaskDelay(pdMS_TO_TICKS(30));
+    smoothSweepDual(pca1, 8, cur_pca1[8], 90.0f,10, cur_pca1[10], 90.0f, 5);
+    vTaskDelay(pdMS_TO_TICKS(30));
+    smoothSweepDual(pca1, 9, cur_pca1[9], 90.0f,11, cur_pca1[11], 90.0f, 5);
+    vTaskDelay(pdMS_TO_TICKS(30));
+    stateLock = 1; 
+  }
 }
-
 void action_sleep() {
   Serial.println("[ACTION SLEEP] Initiating Safe Shutdown...");
   
@@ -338,7 +315,7 @@ void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len) {
 void servoTask(void *pvParameters) {
   int cmd;
   vTaskDelay(pdMS_TO_TICKS(200));
-  // action_default();
+  action_default();
 
   for (;;) {
     if (xQueueReceive(commandQueue, &cmd, portMAX_DELAY) == pdTRUE) {
@@ -362,6 +339,7 @@ void servoTask(void *pvParameters) {
 void setup() {
   Serial.begin(115200);
   Wire.begin(21, 22);
+  Wire.setTimeOut(20);
   pca1.begin(); pca1.setPWMFreq(PWM_FREQ);
   pca2.begin(); pca2.setPWMFreq(PWM_FREQ);
 
@@ -387,7 +365,10 @@ cur_pca2[5] = 90.0f;
 cur_pca2[6] = 90.0f;
 cur_pca2[7] = 90.0f;
 cur_pca2[8] = 90.0f;
-cur_pca2[9] = 90.0f;  
+cur_pca2[9] = 90.0f;
+
+for(int i = 0; i < 12; i++) pca1_SetAngle(i, cur_pca1[i]);
+for(int i = 0; i < 10; i++) pca2_SetAngle(i, cur_pca2[i]);
 
   if (!bno.begin()) {
     Serial.println("BNO055 not found");
